@@ -15,7 +15,10 @@ namespace KobeTaiGuidance_Client.Get
         public Band GetBandBaseInformation(string bandId)
         {
             Band band = new();
-            var htmlDoc = web.Load("https://73.popmundo.com/World/Popmundo.aspx/Band/" + bandId);
+            var htmlDoc = web.Load("https://73.popmundo.com/World/Popmundo.aspx/Artist/" + bandId);
+
+            //Get ID
+            band.Id = uint.Parse(bandId);
 
             //Get Name
             string name = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='entityLogoNoImg gameimage idTrigger']/h2").InnerText;
@@ -24,18 +27,25 @@ namespace KobeTaiGuidance_Client.Get
             //Get Rank
             string rank = htmlDoc.DocumentNode.SelectSingleNode("//div[@class='content']//p").InnerText;
 
-            string pattern = @"(#\d*)";
+            string pattern = @"#(\d*)";
             rank = Regex.Match(rank, pattern).Groups[1].Value;
 
             band.Rank = short.Parse(rank);
 
+            return band;
+        }
+        public List<string> GetBandMembersId(string bandId)
+        {
+            var htmlDoc = web.Load("https://73.popmundo.com/World/Popmundo.aspx/Artist/" + bandId);
 
             //Get Members
             List<string> characterIds = new();
-            foreach (HtmlNode node in htmlDoc.DocumentNode.SelectNodes("//div[@id='ctl00_cphLeftColumn_ctl01_divCurrentMembers']//a[@id='ctl00_cphLeftColumn_ctl01_repArtistMembers_']"))
+            foreach (HtmlNode node in htmlDoc.DocumentNode.SelectNodes("//div[@id='ctl00_cphLeftColumn_ctl01_divCurrentMembers']//a[contains(@id, 'ctl00_cphLeftColumn_ctl01_repArtistMembers_')]"))
             {
-                characterIds.Add(node.Attributes["href"].Value.ToString().Split('/')[5]);
+                characterIds.Add(node.Attributes["href"].Value.ToString().Split('/')[4]);
             }
+
+            return characterIds;
         }
     }
 }

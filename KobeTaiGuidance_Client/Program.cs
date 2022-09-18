@@ -1,6 +1,8 @@
 ﻿using KobeTaiGuidance_Client.Get;
+using KobeTaiGuidane_ClassLibrary;
 
 Info_Character info_Character = new();
+Info_Band info_Band = new();
 
 Console.WriteLine("Character ID?");
 var id = Console.ReadLine();
@@ -10,16 +12,28 @@ Console.WriteLine(
     "\nHealth: " + character.Health +
     "\nMood: " + character.Mood +
     "\nStar Quality: " + character.StarQuality);
-character.Skills = info_Character.GetCharacterSkills(id);
-Console.WriteLine("\nSkills:");
-foreach (var skill in character.Skills)
+
+var bandId = info_Character.GetCharacterBandId(id);
+character.Band = info_Band.GetBandBaseInformation(bandId);
+Console.WriteLine("\nBand:");
+Console.WriteLine(
+    "Name: " + character.Band.Name +
+    "\nRank: " + character.Band.Rank);
+
+Console.WriteLine("\nOther Band Members:");
+List<Character> members = new();
+foreach (var str in info_Band.GetBandMembersId(bandId))
 {
-    Console.Write(skill.Name + " ");
-    for (int i = 0; i < skill.Level; i++)
+    var member = info_Character.GetCharacterBaseInformation(str);
+    members.Add(member);
+    if (member.Id != character.Id)
     {
-        Console.Write("*");
+        Console.WriteLine(
+    "Name: " + member.Name +
+    "\nHealth: " + member.Health +
+    "\nMood: " + member.Mood +
+    "\nStar Quality: " + member.StarQuality);
     }
-    Console.WriteLine();
 }
 
 Console.ReadKey();
