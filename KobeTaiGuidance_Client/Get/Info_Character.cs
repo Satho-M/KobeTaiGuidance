@@ -65,7 +65,12 @@ namespace KobeTaiGuidance_Client.Get
             {
                 Skill skill = new();
 
-                skill.Id = uint.Parse(node.SelectSingleNode(".//td/a").Attributes["href"].Value.ToString().Split('/')[5]);
+                skill.Id = uint.Parse(node
+                    .SelectSingleNode(".//td/a")
+                    .Attributes["href"]
+                    .Value
+                    .ToString().Split('/')[5]);
+
                 skill.Name = node.SelectSingleNode(".//td/a").InnerText;
 
                 var span = node.SelectSingleNode(".//td/span[@class='sortkey']").InnerText;
@@ -94,6 +99,20 @@ namespace KobeTaiGuidance_Client.Get
             }
 
             return skillList;
+        }
+
+        public string GetCharacterBandId(string characterId)
+        {
+            var htmlDoc = web.Load("https://73.popmundo.com/World/Popmundo.aspx/Character/Skills/" + characterId);
+
+            var bandId = htmlDoc.DocumentNode
+                .SelectNodes("//div[@class='float_left characterPresentation']//a")
+                .First()
+                .Attributes["href"]
+                .Value
+                .Split('/')[4];
+
+            return bandId;
         }
     }
 }
