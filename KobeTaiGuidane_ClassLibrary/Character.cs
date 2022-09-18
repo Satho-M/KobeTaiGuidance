@@ -7,7 +7,7 @@
         public byte Health { get; set; }
         public byte Mood { get; set; }
         public byte StarQuality { get; set; }
-        //BAND
+        public Band Band { get; set; }
         public List<Skill>? Skills { get; set; }
     }
 }
